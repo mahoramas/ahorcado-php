@@ -5,10 +5,10 @@ require_once __DIR__ . '/backend/WordProvider.php';
 require_once __DIR__ . '/backend/Game.php';
 require_once __DIR__ . '/backend/Renderer.php';
 
-use Ahorcado\Game;
-use Ahorcado\Renderer;
-use Ahorcado\Storage;
-use Ahorcado\WordProvider;
+use backend\Game;
+use backend\Renderer;
+use backend\Storage;
+use backend\WordProvider;
 
 $storage = new Storage();
 $provider = new WordProvider(__DIR__ . '/words.txt');

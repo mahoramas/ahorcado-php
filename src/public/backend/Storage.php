@@ -1,6 +1,6 @@
 <?php
 
-namespace Ahorcado;
+namespace backend;
 
 class Storage {
     private string $key;

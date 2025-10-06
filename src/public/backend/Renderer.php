@@ -1,6 +1,6 @@
 <?php
 
-namespace Ahorcado;
+namespace backend;
 
 class Renderer {
     public function ascii(int $attemptsLeft): string {

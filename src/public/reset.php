@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/backend/Storage.php';
 
-use Ahorcado\Storage;
+use backend\Storage;
 
 $storage = new Storage();
 $storage->reset();

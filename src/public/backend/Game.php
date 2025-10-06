@@ -1,6 +1,6 @@
 <?php
 
-namespace Ahorcado;
+namespace backend;
 
 class Game {
     private string $word;
