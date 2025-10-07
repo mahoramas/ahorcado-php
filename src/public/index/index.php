@@ -1,49 +1,18 @@
 <?php
+declare(strict_types=1);
 
-require_once __DIR__ . '/backend/Storage.php';
-require_once __DIR__ . '/backend/WordProvider.php';
-require_once __DIR__ . '/backend/Game.php';
-require_once __DIR__ . '/backend/Renderer.php';
+use App\Presentation\Controllers\GameController;
 
-use Ahorcado\Game;
-use Ahorcado\Renderer;
-use Ahorcado\Storage;
-use Ahorcado\WordProvider;
+require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
+\App\Infrastructure\Autoload\Autoloader::register('App\'', __DIR__ . '/../src');
+$config = require __DIR__ . '/../config/config.php';
+$controller = new GameController($config);
+$controller->handle();
 
-$storage = new Storage();
-$provider = new WordProvider(__DIR__ . '/words.txt');
-$state = $storage->get('game');
+$wordsPath   = $config['storage']['words_file'];
+$gamesPath   = $config['storage']['games_file'];
+$maxAttempts = (int)$config['game']['max_attempts'];
 
-if (is_array($state)) {
-    $word = isset($state['word']) ? (string) $state['word'] : $provider->randomWord();
-    $maxAttempts = isset($state['maxAttempts']) ? (int) $state['maxAttempts'] : 6;
-    $game = new Game($word, $maxAttempts, $state);
-} else {
-    $game = new Game($provider->randomWord());
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['letra'])) {
-    $game->guessLetter((string) $_POST['letra']);
-}
-
-$storage->set('game', $game->toState());
-
-$renderer = new Renderer();
-
-$maskedWord = $game->getMaskedWord();
-$attemptsLeft = $game->getAttemptsLeft();
-$usedLetters = $game->getUsedLetters();
-$maskedWordDisplay = implode(' ', str_split($maskedWord));
-
-$message = '';
-$bodyState = '';
-if ($game->isWon()) {
-    $message = 'Felicidades! Ganaste. La palabra era: ' . $game->getWord();
-    $bodyState = 'state-won';
-} elseif ($game->isLost()) {
-    $message = 'Lo siento! Perdiste. La palabra era: ' . $game->getWord();
-    $bodyState = 'state-lost';
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
