@@ -1,115 +1,107 @@
 <?php
-namespace App\Application;
+declare(strict_types=1);
 
-use App\Domain\Repository\GameRepositoryInterface;
+namespace App\Application\Services;
+
 use App\Domain\Entity\Game;
+use App\Domain\Repository\GameRepositoryInterface;
+use App\Domain\Repository\WordRepositoryInterface;
 
-class ServicioPartida
+/**
+ * Servicio de aplicación encargado de coordinar las partidas del juego del ahorcado.
+ * Separa la lógica de dominio (en la entidad Game) de la lógica de aplicación (coordinación y persistencia).
+ */
+final class ServicioPartida
 {
-    private GameRepositoryInterface $repository;
+    private GameRepositoryInterface $gameRepository;
+    private WordRepositoryInterface $wordRepository;
+    private int $maxAttempts;
 
-    public function __construct(GameRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+    /**
+     * @param GameRepositoryInterface $gameRepository Repositorio para guardar/recuperar partidas.
+     * @param WordRepositoryInterface $wordRepository Repositorio de palabras disponibles.
+     * @param int $maxAttempts Número máximo de intentos permitido (viene de config.php).
+     */
+    public function __construct(
+        GameRepositoryInterface $gameRepository,
+        WordRepositoryInterface $wordRepository,
+        int $maxAttempts
+    ) {
+        $this->gameRepository = $gameRepository;
+        $this->wordRepository = $wordRepository;
+        $this->maxAttempts = $maxAttempts;
     }
 
-    public function crearNuevaPartida(string $palabra): string
+    /**
+     * Crea una nueva partida y la guarda en el repositorio.
+     *
+     * @return Game La entidad del nuevo juego creada.
+     */
+    public function crearNuevaPartida(): Game
     {
         $id = uniqid('ahorcado_', true);
-        $game = new Game($id, $palabra, [], 0);
-        $this->repository->save($game);
-        return $id;
+        $word = $this->wordRepository->randomWord();
+
+        $game = new Game($id, $word, $this->maxAttempts);
+        $this->gameRepository->save($game);
+
+        return $game;
     }
 
+    /**
+     * Procesa un intento de letra en una partida existente.
+     *
+     * @param string $idPartida ID de la partida.
+     * @param string $letra Letra propuesta por el jugador.
+     * @return array Estado actualizado del juego (para la capa de presentación).
+     */
     public function probarLetra(string $idPartida, string $letra): array
     {
-        $game = $this->repository->find($idPartida);
+        $game = $this->gameRepository->find($idPartida);
+
         if (!$game) {
-            return ['error' => 'Partida no encontrada'];
+            return ['error' => 'Partida no encontrada.'];
         }
 
-        // Obtener las letras usadas
-        $letrasUsadas = $game->getLetrasUsadas();
+        $game->guessLetter($letra);
+        $this->gameRepository->save($game);
 
-        // Ver si la letra ya fue utilizada
-        if (in_array($letra, $letrasUsadas)) {
-            return [
-                'mensaje' => 'Letra ya utilizada',
-                'estado' => $this->obtenerEstadoDesdeGame($game)
-            ];
-        }
-
-        // Añadir la letra a las usadas
-        $letrasUsadas[] = $letra;
-
-        // Actualizar el objeto Game
-        $game->setLetrasUsadas($letrasUsadas);
-
-        // Ver si la letra está en la palabra
-        if (strpos($game->getPalabra(), $letra) !== false) {
-            $mensaje = '¡Letra correcta!';
-        } else {
-            $game->setErrores($game->getErrores() + 1);
-            $mensaje = 'Letra incorrecta';
-        }
-
-        // Guardar la partida actualizada
-        $this->repository->save($game);
-
-        // Devolver estado actualizado
-        return [
-            'mensaje' => $mensaje,
-            'errores' => $game->getErrores(),
-            'letras_usadas' => $game->getLetrasUsadas()
-        ];
+        return $this->estadoComoArray($game);
     }
 
+    /**
+     * Obtiene el estado actual de una partida por su ID.
+     *
+     * @param string $idPartida ID de la partida.
+     * @return array Estado actual o mensaje de error si no existe.
+     */
     public function obtenerEstado(string $idPartida): array
     {
-        $game = $this->repository->find($idPartida);
+        $game = $this->gameRepository->find($idPartida);
+
         if (!$game) {
-            return ['error' => 'Partida no encontrada'];
+            return ['error' => 'Partida no encontrada.'];
         }
 
-        // Crear la representación visual de la palabra oculta
-        $palabra = $game->getPalabra();
-        $letrasUsadas = $game->getLetrasUsadas();
-
-        $palabraOculta = '';
-        foreach (str_split($palabra) as $char) {
-            if (in_array($char, $letrasUsadas)) {
-                $palabraOculta .= $char . ' ';
-            } else {
-                $palabraOculta .= '_ ';
-            }
-        }
-
-        return [
-            'palabra_oculta' => trim($palabraOculta),
-            'errores' => $game->getErrores(),
-            'letras_usadas' => $letrasUsadas
-        ];
+        return $this->estadoComoArray($game);
     }
 
-    // Método auxiliar para convertir un objeto Game en array de estado
-    private function obtenerEstadoDesdeGame(Game $game): array
+    /**
+     * Convierte la entidad Game en un array listo para mostrar o serializar.
+     *
+     * @param Game $game Entidad de dominio.
+     * @return array Estado formateado para la vista.
+     */
+    private function estadoComoArray(Game $game): array
     {
-        $palabra = $game->getPalabra();
-        $letrasUsadas = $game->getLetrasUsadas();
-
-        $palabraOculta = '';
-        foreach (str_split($palabra) as $char) {
-            if (in_array($char, $letrasUsadas)) {
-                $palabraOculta .= $char . ' ';
-            } else {
-                $palabraOculta .= '_ ';
-            }
-        }
-
         return [
-            'palabra_oculta' => trim($palabraOculta),
-            'errores' => $game->getErrores(),
-            'letras_usadas' => $letrasUsadas
+            'id' => $game->getId(),
+            'palabra_oculta' => $game->getMaskedWord(),
+            'intentos_restantes' => $game->getAttemptsLeft(),
+            'letras_usadas' => $game->getUsedLetters(),
+            'estado' => $game->isWon()
+                ? 'ganado'
+                : ($game->isLost() ? 'perdido' : 'en curso'),
         ];
     }
 }

@@ -11,31 +11,22 @@ final class Game
     private int $attemptsLeft;
     private array $usedLetters = [];
 
-    public function __construct(string $id, string $word, int $maxAttempts = 6, ?array $state = null) {
+    public function __construct(string $id, string $word, int $maxAttempts)
+    {
         $this->id = $id;
         $this->word = strtoupper($word);
         $this->maxAttempts = $maxAttempts;
-
-        if ($state !== null) {
-            $this->restoreState($state);
-            return;
-        }
-
         $this->attemptsLeft = $maxAttempts;
-        $this->usedLetters = [];
     }
 
-    public function guessLetter(string $letter): void {
+    public function guessLetter(string $letter): void
+    {
         if ($this->isWon() || $this->isLost()) {
             return;
         }
 
         $letter = $this->sanitizeLetter($letter);
-        if ($letter === '') {
-            return;
-        }
-
-        if (in_array($letter, $this->usedLetters, true)) {
+        if ($letter === '' || in_array($letter, $this->usedLetters, true)) {
             return;
         }
 
@@ -46,63 +37,51 @@ final class Game
         }
     }
 
-    public function getMaskedWord(): string {
-        $masked = '';
-        foreach (str_split($this->word) as $char) {
-            $masked .= in_array($char, $this->usedLetters, true) ? $char : '_';
-        }
-
-        return $masked;
+    public function getMaskedWord(): string
+    {
+        return implode('', array_map(
+            fn($char) => in_array($char, $this->usedLetters, true) ? $char : '_',
+            str_split($this->word)
+        ));
     }
 
-    public function getAttemptsLeft(): int {
+    public function getAttemptsLeft(): int
+    {
         return $this->attemptsLeft;
     }
 
-    public function getUsedLetters(): array {
+    public function getUsedLetters(): array
+    {
         return $this->usedLetters;
     }
 
-    public function isWon(): bool {
+    public function isWon(): bool
+    {
         return $this->getMaskedWord() === $this->word;
     }
 
-    public function isLost(): bool {
+    public function isLost(): bool
+    {
         return $this->attemptsLeft <= 0 && !$this->isWon();
     }
 
-    public function getWord(): string {
+    public function getWord(): string
+    {
         return $this->word;
     }
 
-    public function toState(): array {
-        return [
-            'word' => $this->word,
-            'maxAttempts' => $this->maxAttempts,
-            'attemptsLeft' => $this->attemptsLeft,
-            'usedLetters' => $this->usedLetters,
-        ];
+    public function getId(): string
+    {
+        return $this->id;
     }
 
-    private function restoreState(array $state): void {
-        $this->word = isset($state['word']) ? strtoupper((string) $state['word']) : $this->word;
-        $this->maxAttempts = isset($state['maxAttempts']) ? (int) $state['maxAttempts'] : $this->maxAttempts;
-        $this->attemptsLeft = isset($state['attemptsLeft']) ? max(0, (int) $state['attemptsLeft']) : $this->maxAttempts;
-
-        $letters = [];
-        if (isset($state['usedLetters']) && is_array($state['usedLetters'])) {
-            foreach ($state['usedLetters'] as $letter) {
-                $clean = $this->sanitizeLetter((string) $letter);
-                if ($clean !== '' && !in_array($clean, $letters, true)) {
-                    $letters[] = $clean;
-                }
-            }
-        }
-
-        $this->usedLetters = $letters;
+    public function getMaxAttempts(): int
+    {
+        return $this->maxAttempts;
     }
 
-    private function sanitizeLetter(string $letter): string {
+    private function sanitizeLetter(string $letter): string
+    {
         $letter = strtoupper($letter);
         $letter = preg_replace('/[^A-Z]/', '', $letter);
 

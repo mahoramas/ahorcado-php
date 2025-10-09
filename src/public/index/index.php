@@ -1,17 +1,46 @@
 <?php
 declare(strict_types=1);
 
+require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
+\App\Infrastructure\Autoload\Autoloader::register('App\\', __DIR__ . '/../src');
+
+$config = require __DIR__ . '/../config/config.php';
+
+use App\Application\Services\ServicioPartida;
+use App\Infrastructure\Persistence\JsonGameRepository;
+use App\Infrastructure\Persistence\JsonWordRepository;
 use App\Presentation\Controllers\GameController;
 
-require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
-\App\Infrastructure\Autoload\Autoloader::register('App\'', __DIR__ . '/../src');
-$config = require __DIR__ . '/../config/config.php';
-$controller = new GameController($config);
-$controller->handle();
-
-$wordsPath   = $config['storage']['words_file'];
 $gamesPath   = $config['storage']['games_file'];
+$wordsPath   = $config['storage']['words_file'];
 $maxAttempts = (int)$config['game']['max_attempts'];
+
+/**
+ * Inicializar repositorios
+ */
+$gameRepository = new JsonGameRepository($gamesPath);
+$wordRepository = new JsonWordRepository($wordsPath);
+
+/**
+ * Crear el servicio de aplicación
+ */
+$servicioPartida = new ServicioPartida($gameRepository, $wordRepository, $maxAttempts);
+
+/**
+ * Crear el controlador y manejar la solicitud
+ */
+$controller = new GameController($servicioPartida);
+$responseData = $controller->handle();
+
+/**
+ * Variables de presentacion
+ */
+$maskedWordDisplay = $responseData['palabra_oculta'] ?? '';
+$attemptsLeft      = $responseData['intentos_restantes'] ?? $maxAttempts;
+$usedLetters        = $responseData['letras_usadas'] ?? [];
+$message            = $responseData['mensaje'] ?? '';
+$bodyState          = $responseData['estado'] ?? 'en curso';
+$renderer           = $responseData['renderer'] ?? null;
 
 ?>
 <!DOCTYPE html>
@@ -22,7 +51,7 @@ $maxAttempts = (int)$config['game']['max_attempts'];
     <title>Ahorcado en PHP</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="<?php echo htmlspecialchars($bodyState, ENT_QUOTES, 'UTF-8'); ?>">
+<body class="<?= htmlspecialchars($bodyState, ENT_QUOTES, 'UTF-8') ?>">
 <div class="background"></div>
 <main class="app">
     <header class="app__header">
@@ -33,24 +62,29 @@ $maxAttempts = (int)$config['game']['max_attempts'];
     <section class="game">
         <div class="game__visual">
             <div class="hangman-card">
-                <?php echo $renderer->ascii($attemptsLeft); ?>
-                <span class="attempts-badge">Intentos restantes: <strong><?php echo $attemptsLeft; ?></strong></span>
+                <?php if ($renderer): ?>
+                    <?= $renderer->ascii($attemptsLeft) ?>
+                <?php endif; ?>
+                <span class="attempts-badge">
+                    Intentos restantes: <strong><?= $attemptsLeft ?></strong>
+                </span>
             </div>
         </div>
+
         <div class="game__panel">
             <div class="word-display" aria-live="polite">
                 <span class="label">Palabra</span>
-                <span class="value"><?php echo htmlspecialchars($maskedWordDisplay, ENT_QUOTES, 'UTF-8'); ?></span>
+                <span class="value"><?= htmlspecialchars($maskedWordDisplay, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
 
             <div class="used-letters" aria-live="polite">
                 <span class="label">Letras usadas</span>
                 <div class="letters">
                     <?php if (empty($usedLetters)): ?>
-                        <span class="letters__placeholder">Aun no has probado ninguna letra.</span>
+                        <span class="letters__placeholder">Aún no has probado ninguna letra.</span>
                     <?php else: ?>
                         <?php foreach ($usedLetters as $letter): ?>
-                            <span class="chip"><?php echo htmlspecialchars($letter, ENT_QUOTES, 'UTF-8'); ?></span>
+                            <span class="chip"><?= htmlspecialchars($letter, ENT_QUOTES, 'UTF-8') ?></span>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -66,7 +100,7 @@ $maxAttempts = (int)$config['game']['max_attempts'];
                 </form>
             <?php else: ?>
                 <div class="result-banner" role="status">
-                    <strong><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></strong>
+                    <strong><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></strong>
                 </div>
                 <a class="reset-button" href="reset.php">Jugar de nuevo</a>
             <?php endif; ?>
