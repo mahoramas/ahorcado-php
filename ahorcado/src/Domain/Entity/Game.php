@@ -40,7 +40,7 @@ final class Game
     public function getMaskedWord(): string
     {
         return implode('', array_map(
-            fn($char) => in_array($char, $this->usedLetters, true) ? $char : '_',
+            fn($char) => in_array($char, $this->usedLetters, true) ? $char : '_' . " ",
             str_split($this->word)
         ));
     }

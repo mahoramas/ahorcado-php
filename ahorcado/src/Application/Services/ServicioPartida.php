@@ -35,9 +35,9 @@ final class ServicioPartida
     /**
      * Crea una nueva partida y la guarda en el repositorio.
      *
-     * @return Game La entidad del nuevo juego creada.
+     * @return string El ID del nuevo juego creado.
      */
-    public function crearNuevaPartida(): Game
+    public function crearNuevaPartida(): string
     {
         $id = uniqid('ahorcado_', true);
         $word = $this->wordRepository->randomWord();
@@ -45,8 +45,9 @@ final class ServicioPartida
         $game = new Game($id, $word, $this->maxAttempts);
         $this->gameRepository->save($game);
 
-        return $game;
+        return $game->getId();
     }
+
 
     /**
      * Procesa un intento de letra en una partida existente.

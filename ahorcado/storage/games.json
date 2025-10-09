@@ -1,0 +1,61 @@
+{
+    "games": {
+        "ahorcado_68e79d4f9fb7e8.25252017": {
+            "id": "ahorcado_68e79d4f9fb7e8.25252017",
+            "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": []
+        },
+        "ahorcado_68e79eb37fa647.35719571": {
+            "id": "ahorcado_68e79eb37fa647.35719571",
+            "word": "OBJETO",
+            "maxAttempts": 6,
+            "attemptsLeft": 1,
+            "usedLetters": [
+                "A",
+                "T",
+                "R",
+                "D",
+                "S",
+                "J",
+                "K",
+                "O",
+                "B",
+                "E"
+            ]
+        },
+        "ahorcado_68e79f755692c0.19503938": {
+            "id": "ahorcado_68e79f755692c0.19503938",
+            "word": "OBJETO",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "Q",
+                "W",
+                "A",
+                "S",
+                "D",
+                "F"
+            ]
+        },
+        "ahorcado_68e79f985f05c9.80999753": {
+            "id": "ahorcado_68e79f985f05c9.80999753",
+            "word": "JSON",
+            "maxAttempts": 6,
+            "attemptsLeft": 5,
+            "usedLetters": [
+                "H"
+            ]
+        },
+        "ahorcado_68e7a05ba1ae96.21679064": {
+            "id": "ahorcado_68e7a05ba1ae96.21679064",
+            "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "H"
+            ]
+        }
+    }
+}

@@ -1,4 +1,4 @@
-# Dockerfile
+# Usa PHP 8.3 con Apache
 FROM php:8.3-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -10,13 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/ahorcado/public
+
 RUN sed -ri "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/000-default.conf \
  && sed -ri "s!Directory /var/www/!Directory ${APACHE_DOCUMENT_ROOT%/public}!g" /etc/apache2/apache2.conf
 
 COPY php.ini /usr/local/etc/php/conf.d/zz-custom.ini
 
-WORKDIR /var/www/html
+WORKDIR /var/www/ahorcado
+
+COPY . /var/www/ahorcado
 
 EXPOSE 80
+
 CMD ["apache2-foreground"]
