@@ -1,26 +1,205 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f0f0f0;
+:root {
+    --bg-color: #f5f7fb;
+    --card-bg: #ffffff;
+    --text-color: #222;
+    --accent: #007bff;
+    --accent-hover: #0056b3;
+    --gallows: #6a5acd;
+    --figure: #333;
 }
-p {
+
+body.dark {
+    --bg-color: #1e1f26;
+    --card-bg: #2a2b35;
+    --text-color: #f0f0f0;
+    --accent: #4f9eff;
+    --accent-hover: #2a7bdc;
+    --gallows: #9ca3af;
+    --figure: #f0f0f0;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+.app {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 700px;
+    padding: 2em;
+    text-align: center;
+    transition: background 0.4s ease;
+}
+
+.theme-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.8em;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.theme-toggle input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: var(--accent);
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 0.3em;
+}
+
+.app__subtitle {
+    color: #777;
+    margin-bottom: 1.5em;
+}
+
+.hangman-svg {
+    width: 200px;
+    height: 200px;
+    stroke: var(--figure);
+    stroke-width: 3;
+    fill: none;
+    margin-bottom: 1em;
+}
+
+.gallows-base,
+.gallows-pole,
+.gallows-top,
+.gallows-rope {
+    stroke: var(--gallows);
+}
+
+.hangman-head,
+.hangman-body,
+.hangman-arm-left,
+.hangman-arm-right,
+.hangman-leg-left,
+.hangman-leg-right {
+    opacity: 0;
+    animation: draw-part 0.6s ease forwards;
+}
+
+@keyframes draw-part {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.word-display {
+    font-size: 1.6em;
+    letter-spacing: 0.4em;
+    margin-bottom: 1em;
+}
+
+.guess-form input {
     font-size: 1.2em;
+    padding: 0.3em;
+    width: 50px;
+    text-align: center;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    transition: border 0.3s ease, background 0.3s ease;
+}
+
+.guess-form input:focus {
+    outline: none;
+    border-color: var(--accent-hover);
+}
+
+.guess-form button {
+    margin-left: 0.5em;
+    padding: 0.5em 1em;
+    font-size: 1em;
+    background: var(--accent);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.guess-form button:hover {
+    background: var(--accent-hover);
+}
+
+.used-letters {
+    margin: 1em 0;
+}
+
+.chip {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    padding: 0.3em 0.6em;
+    margin: 0.2em;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+body.dark .chip {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.result-banner {
+    font-size: 1.4em;
+    margin-top: 1em;
+}
+
+body.won .result-banner {
+    color: #2e8b57;
+}
+
+body.lost .result-banner {
+    color: #d9534f;
 }
 
 .reset-button {
-  display: inline-block;
-  margin-top: 1em;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+    display: inline-block;
+    margin-top: 1.5em;
+    padding: 0.7em 1.3em;
+    font-size: 1em;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
 }
 
 .reset-button:hover {
-  background-color: #0056b3;
+    background-color: var(--accent-hover);
 }
+
 

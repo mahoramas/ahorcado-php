@@ -75,10 +75,18 @@ $bodyState         = $responseData['estado'] ?? 'playing';
 <body class="<?= htmlspecialchars($bodyState, ENT_QUOTES, 'UTF-8') ?>">
 <div class="background"></div>
 <main class="app">
-    <header class="app__header">
-        <h1>Juego del Ahorcado</h1>
-        <p class="app__subtitle">Adivina la palabra antes de que se complete la figura.</p>
-    </header>
+<header class="app__header">
+    <div class="theme-toggle-wrapper">
+        <label class="theme-toggle">
+            🌞
+            <input type="checkbox" id="themeSwitch">
+            🌙
+        </label>
+    </div>
+    <h1>Juego del Ahorcado</h1>
+    <p class="app__subtitle">Adivina la palabra antes de que se complete la figura.</p>
+</header>
+
 
     <section class="game">
         <div class="game__visual">
@@ -127,5 +135,24 @@ $bodyState         = $responseData['estado'] ?? 'playing';
         </div>
     </section>
 </main>
+<script>
+    const themeSwitch = document.getElementById('themeSwitch');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark');
+        themeSwitch.checked = true;
+    }
+
+    themeSwitch.addEventListener('change', () => {
+        if (themeSwitch.checked) {
+            body.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+</script>
 </body>
 </html>
