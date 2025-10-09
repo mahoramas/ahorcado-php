@@ -7,10 +7,10 @@ use App\Application\Services\ServicioPartida;
 
 /**
  * Controlador principal del juego del Ahorcado.
- * 
- * Responsable de manejar las peticiones del usuario (GET / POST),
- * interactuar con el servicio de aplicación (ServicioPartida)
- * y devolver los datos necesarios para renderizar la vista.
+ *
+ * Gestiona las peticiones del usuario (GET/POST),
+ * interactúa con el servicio de aplicación (ServicioPartida)
+ * y devuelve los datos necesarios para renderizar la vista.
  */
 final class GameController
 {
@@ -24,12 +24,13 @@ final class GameController
     /**
      * Maneja la solicitud actual y devuelve los datos para la vista.
      *
-     * @return array Datos del estado actual del juego (palabra oculta, letras usadas, intentos, etc.).
+     * @return array Datos del estado actual del juego.
      */
     public function handle(): array
     {
         session_start();
 
+        // Crear nueva partida si no existe
         if (!isset($_SESSION['game_id'])) {
             $gameId = $this->servicioPartida->crearNuevaPartida();
             $_SESSION['game_id'] = $gameId;
@@ -37,40 +38,48 @@ final class GameController
             $gameId = $_SESSION['game_id'];
         }
 
+        // Variables iniciales
         $mensaje = '';
         $palabraOculta = '';
         $letrasUsadas = [];
         $intentosRestantes = 0;
+        $bodyState = 'playing';
+        $palabraReal = '';
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['letra'])) {
+        // Obtener el estado actual
+        $estado = $this->servicioPartida->obtenerEstado($gameId);
+        $palabraOculta = $estado['palabra_oculta'] ?? '';
+        $letrasUsadas = $estado['letras_usadas'] ?? [];
+        $intentosRestantes = $estado['intentos_restantes'] ?? 0;
+        $isWon = $estado['ganado'] ?? false;
+        $isLost = $estado['perdido'] ?? false;
+        $palabraReal = $estado['palabra_real'] ?? '';
+
+        // Solo procesar POST si el juego sigue activo
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['letra']) && !$isWon && !$isLost) {
             $letra = trim($_POST['letra']);
-            $resultado = $this->servicioPartida->probarLetra($gameId, $letra);
-
-            $mensaje = $resultado['mensaje'] ?? '';
-            $palabraOculta = $resultado['palabra_oculta'] ?? '';
-            $letrasUsadas = $resultado['letras_usadas'] ?? [];
-            $intentosRestantes = $resultado['intentos_restantes'] ?? 0;
-        } else {
-            $estado = $this->servicioPartida->obtenerEstado($gameId);
-            $palabraOculta = $estado['palabra_oculta'] ?? '';
-            $letrasUsadas = $estado['letras_usadas'] ?? [];
-            $intentosRestantes = $estado['intentos_restantes'] ?? 0;
+            if ($letra !== '') {
+                $resultado = $this->servicioPartida->probarLetra($gameId, $letra);
+                $mensaje = $resultado['mensaje'] ?? '';
+                $palabraOculta = $resultado['palabra_oculta'] ?? '';
+                $letrasUsadas = $resultado['letras_usadas'] ?? [];
+                $intentosRestantes = $resultado['intentos_restantes'] ?? 0;
+                $isWon = $resultado['ganado'] ?? false;
+                $isLost = $resultado['perdido'] ?? false;
+                $palabraReal = $resultado['palabra_real'] ?? $palabraReal;
+            }
         }
 
-        $estadoJuego = $this->servicioPartida->obtenerEstado($gameId);
-        $isWon = $estadoJuego['ganado'] ?? false;
-        $isLost = $estadoJuego['perdido'] ?? false;
-
+        // Determinar estado del cuerpo y mensaje final
         if ($isWon) {
             $bodyState = 'won';
-            $mensaje = '¡Has ganado! La palabra era: ' . $estadoJuego['palabra_real'];
+            $mensaje = '🎉 ¡Has ganado! La palabra era: ' . $palabraReal;
         } elseif ($isLost) {
             $bodyState = 'lost';
-            $mensaje = 'Has perdido. La palabra era: ' . $estadoJuego['palabra_real'];
-        } else {
-            $bodyState = 'playing';
+            $mensaje = '💀 Has perdido. La palabra era: ' . $palabraReal;
         }
 
+        // Retornar datos a la vista
         return [
             'mensaje' => $mensaje,
             'palabra_oculta' => $palabraOculta,

@@ -43,22 +43,34 @@ final class JsonGameRepository implements GameRepositoryInterface
      */
     private function readAll(): array
     {
-        $fh = fopen($this->file, 'c+');
+        // Asegurar que el directorio existe
+        $dir = dirname($this->file);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        // Asegurar que el archivo existe
+        if (!is_file($this->file)) {
+            file_put_contents($this->file, json_encode(['games' => []], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
+
+        $fh = @fopen($this->file, 'c+');
         if ($fh === false) {
-            throw new \RuntimeException('No se pudo abrir el fichero de juegos.');
+            $error = error_get_last();
+            throw new \RuntimeException('No se pudo abrir el fichero de juegos: ' . ($error['message'] ?? 'error desconocido'));
         }
 
         try {
             flock($fh, LOCK_SH);
             $content = stream_get_contents($fh);
             $json = $content ? json_decode($content, true) : ['games' => []];
-
             return is_array($json) ? $json : ['games' => []];
         } finally {
             flock($fh, LOCK_UN);
             fclose($fh);
         }
     }
+
 
     /**
      * Escribe el JSON completo con escritura atómica y bloqueo exclusivo

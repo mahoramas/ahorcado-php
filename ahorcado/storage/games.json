@@ -1,61 +1,242 @@
 {
     "games": {
-        "ahorcado_68e79d4f9fb7e8.25252017": {
-            "id": "ahorcado_68e79d4f9fb7e8.25252017",
+        "ahorcado_68e7df0e958457.96865055": {
+            "id": "ahorcado_68e7df0e958457.96865055",
+            "word": "PATRON",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "A",
+                "R",
+                "H",
+                "O",
+                "M",
+                "N",
+                "I",
+                "U",
+                "E",
+                "L"
+            ]
+        },
+        "ahorcado_68e7e7e80787b3.89096876": {
+            "id": "ahorcado_68e7e7e80787b3.89096876",
+            "word": "PATRON",
+            "maxAttempts": 6,
+            "attemptsLeft": 5,
+            "usedLetters": [
+                "V"
+            ]
+        },
+        "ahorcado_68e7f3bd59e805.91859192": {
+            "id": "ahorcado_68e7f3bd59e805.91859192",
             "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 5,
+            "usedLetters": [
+                "V",
+                "P",
+                "H"
+            ]
+        },
+        "ahorcado_68e7f7c8b483f1.73018289": {
+            "id": "ahorcado_68e7f7c8b483f1.73018289",
+            "word": "OBJETO",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "P",
+                "A",
+                "O",
+                "B",
+                "J",
+                "H",
+                "G",
+                "F",
+                "I"
+            ]
+        },
+        "ahorcado_68e7f821ea3102.49893494": {
+            "id": "ahorcado_68e7f821ea3102.49893494",
+            "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 5,
+            "usedLetters": [
+                "C",
+                "P",
+                "H"
+            ]
+        },
+        "ahorcado_68e7faa9418213.94718864": {
+            "id": "ahorcado_68e7faa9418213.94718864",
+            "word": "JSON",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "H",
+                "J",
+                "P",
+                "O",
+                "M",
+                "Y",
+                "T",
+                "A"
+            ]
+        },
+        "ahorcado_68e803fc9c8c96.07664466": {
+            "id": "ahorcado_68e803fc9c8c96.07664466",
+            "word": "NAMESPACE",
             "maxAttempts": 6,
             "attemptsLeft": 6,
             "usedLetters": []
         },
-        "ahorcado_68e79eb37fa647.35719571": {
-            "id": "ahorcado_68e79eb37fa647.35719571",
-            "word": "OBJETO",
+        "ahorcado_68e80a1eabef02.69338059": {
+            "id": "ahorcado_68e80a1eabef02.69338059",
+            "word": "NAMESPACE",
             "maxAttempts": 6,
-            "attemptsLeft": 1,
+            "attemptsLeft": 5,
             "usedLetters": [
                 "A",
+                "P",
                 "T",
-                "R",
-                "D",
+                "N",
+                "M",
+                "E",
                 "S",
+                "C"
+            ]
+        },
+        "ahorcado_68e80a3bc2a074.62336657": {
+            "id": "ahorcado_68e80a3bc2a074.62336657",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "M",
+                "N",
+                "A",
+                "E",
+                "S",
+                "C",
+                "P"
+            ]
+        },
+        "ahorcado_68e80a4fae2938.79572956": {
+            "id": "ahorcado_68e80a4fae2938.79572956",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
                 "J",
                 "K",
-                "O",
-                "B",
+                "L",
+                "U",
+                "I",
+                "E",
+                "O"
+            ]
+        },
+        "ahorcado_68e80a5f79a1e7.03289483": {
+            "id": "ahorcado_68e80a5f79a1e7.03289483",
+            "word": "CLASE",
+            "maxAttempts": 6,
+            "attemptsLeft": 4,
+            "usedLetters": [
+                "P",
+                "J",
+                "C",
+                "L",
+                "A",
+                "S",
                 "E"
             ]
         },
-        "ahorcado_68e79f755692c0.19503938": {
-            "id": "ahorcado_68e79f755692c0.19503938",
-            "word": "OBJETO",
+        "ahorcado_68e80a8119fc50.38048060": {
+            "id": "ahorcado_68e80a8119fc50.38048060",
+            "word": "CLASE",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "C",
+                "L",
+                "A",
+                "S",
+                "E"
+            ]
+        },
+        "ahorcado_68e80a88c70262.32983503": {
+            "id": "ahorcado_68e80a88c70262.32983503",
+            "word": "CLASE",
             "maxAttempts": 6,
             "attemptsLeft": 0,
             "usedLetters": [
                 "Q",
                 "W",
-                "A",
-                "S",
-                "D",
-                "F"
+                "R",
+                "Y",
+                "Z",
+                "X"
             ]
         },
-        "ahorcado_68e79f985f05c9.80999753": {
-            "id": "ahorcado_68e79f985f05c9.80999753",
-            "word": "JSON",
-            "maxAttempts": 6,
-            "attemptsLeft": 5,
-            "usedLetters": [
-                "H"
-            ]
-        },
-        "ahorcado_68e7a05ba1ae96.21679064": {
-            "id": "ahorcado_68e7a05ba1ae96.21679064",
-            "word": "PHP",
+        "ahorcado_68e80a9ad08ad6.07999255": {
+            "id": "ahorcado_68e80a9ad08ad6.07999255",
+            "word": "NAMESPACE",
             "maxAttempts": 6,
             "attemptsLeft": 6,
             "usedLetters": [
-                "H"
+                "N",
+                "A",
+                "M",
+                "E",
+                "S",
+                "P",
+                "C"
             ]
+        },
+        "ahorcado_68e80afe39dec2.49958501": {
+            "id": "ahorcado_68e80afe39dec2.49958501",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "Q",
+                "W",
+                "Z",
+                "X",
+                "C",
+                "V",
+                "B"
+            ]
+        },
+        "ahorcado_68e80b0cc686a0.25318423": {
+            "id": "ahorcado_68e80b0cc686a0.25318423",
+            "word": "JSON",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "J",
+                "S",
+                "O",
+                "N"
+            ]
+        },
+        "ahorcado_68e80b16945a50.94246770": {
+            "id": "ahorcado_68e80b16945a50.94246770",
+            "word": "JSON",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "J",
+                "S",
+                "O",
+                "N"
+            ]
+        },
+        "ahorcado_68e80b1d119e75.64373382": {
+            "id": "ahorcado_68e80b1d119e75.64373382",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": []
         }
     }
 }

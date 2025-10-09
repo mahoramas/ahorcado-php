@@ -4,44 +4,36 @@ declare(strict_types=1);
 require __DIR__ . '/../src/Infrastructure/Autoload/Autoloader.php';
 \App\Infrastructure\Autoload\Autoloader::register('App\\', __DIR__ . '/../src');
 
-$config = require __DIR__ . '/../config/config.php';
-
 use App\Application\Services\ServicioPartida;
 use App\Infrastructure\Persistence\JsonGameRepository;
 use App\Infrastructure\Persistence\JsonWordRepository;
 use App\Presentation\Controllers\GameController;
+use App\Presentation\Views\Renderer;
 
+// Cargar configuración
+$config = require __DIR__ . '/../config/config.php';
 $gamesPath   = $config['storage']['games_file'];
 $wordsPath   = $config['storage']['words_file'];
 $maxAttempts = (int)$config['game']['max_attempts'];
 
-/**
- * Inicializar repositorios
- */
+// Inicializar repositorios y servicio
 $gameRepository = new JsonGameRepository($gamesPath);
 $wordRepository = new JsonWordRepository($wordsPath);
-
-/**
- * Crear el servicio de aplicación
- */
 $servicioPartida = new ServicioPartida($gameRepository, $wordRepository, $maxAttempts);
 
-/**
- * Crear el controlador y manejar la solicitud
- */
+// Crear controlador y procesar solicitud
 $controller = new GameController($servicioPartida);
 $responseData = $controller->handle();
 
-/**
- * Variables de presentacion
- */
+// Crear renderer
+$renderer = new Renderer();
+
+// Variables de presentación
 $maskedWordDisplay = $responseData['palabra_oculta'] ?? '';
 $attemptsLeft      = $responseData['intentos_restantes'] ?? $maxAttempts;
-$usedLetters        = $responseData['letras_usadas'] ?? [];
-$message            = $responseData['mensaje'] ?? '';
-$bodyState          = $responseData['estado'] ?? 'en curso';
-$renderer           = $responseData['renderer'] ?? null;
-
+$usedLetters       = $responseData['letras_usadas'] ?? [];
+$message           = $responseData['mensaje'] ?? '';
+$bodyState         = $responseData['estado'] ?? 'playing';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -50,6 +42,35 @@ $renderer           = $responseData['renderer'] ?? null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahorcado en PHP</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .word-display .value {
+            letter-spacing: 0.4em;
+            font-family: monospace;
+            font-size: 1.4em;
+        }
+        .ascii-art pre {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.1;
+            margin: 0;
+        }
+        .reset-button {
+            display: inline-block;
+            margin-top: 1.2em;
+            padding: 0.7em 1.3em;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+        .reset-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body class="<?= htmlspecialchars($bodyState, ENT_QUOTES, 'UTF-8') ?>">
 <div class="background"></div>
@@ -62,9 +83,7 @@ $renderer           = $responseData['renderer'] ?? null;
     <section class="game">
         <div class="game__visual">
             <div class="hangman-card">
-                <?php if ($renderer): ?>
-                    <?= $renderer->ascii($attemptsLeft) ?>
-                <?php endif; ?>
+                <?= $renderer->ascii($attemptsLeft) ?>
                 <span class="attempts-badge">
                     Intentos restantes: <strong><?= $attemptsLeft ?></strong>
                 </span>
@@ -74,7 +93,9 @@ $renderer           = $responseData['renderer'] ?? null;
         <div class="game__panel">
             <div class="word-display" aria-live="polite">
                 <span class="label">Palabra</span>
-                <span class="value"><?= htmlspecialchars($maskedWordDisplay, ENT_QUOTES, 'UTF-8') ?></span>
+                <span class="value">
+                    <?= htmlspecialchars(implode(' ', str_split($maskedWordDisplay)), ENT_QUOTES, 'UTF-8') ?>
+                </span>
             </div>
 
             <div class="used-letters" aria-live="polite">
@@ -89,8 +110,7 @@ $renderer           = $responseData['renderer'] ?? null;
                     <?php endif; ?>
                 </div>
             </div>
-
-            <?php if ($message === ''): ?>
+            <?php if ($bodyState === 'playing'): ?>
                 <form class="guess-form" method="post">
                     <label for="letra" class="label">Introduce una letra</label>
                     <div class="guess-form__controls">

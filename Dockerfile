@@ -15,6 +15,11 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/ahorcado/public
 RUN sed -ri "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/000-default.conf \
  && sed -ri "s!Directory /var/www/!Directory ${APACHE_DOCUMENT_ROOT%/public}!g" /etc/apache2/apache2.conf
 
+RUN mkdir -p /var/www/ahorcado/storage \
+    && chown -R www-data:www-data /var/www/ahorcado/storage \
+    && chmod -R 775 /var/www/ahorcado/storage
+
+
 COPY php.ini /usr/local/etc/php/conf.d/zz-custom.ini
 
 WORKDIR /var/www/ahorcado

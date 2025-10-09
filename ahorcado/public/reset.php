@@ -12,13 +12,6 @@ declare(strict_types=1);
 session_start();
 
 /**
- * Eliminar el identificador de la partida actual
- */
-if (isset($_SESSION['game_id'])) {
-    unset($_SESSION['game_id']);
-}
-
-/**
  * Destruir la sesión
  */
 session_unset();

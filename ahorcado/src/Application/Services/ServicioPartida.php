@@ -48,7 +48,6 @@ final class ServicioPartida
         return $game->getId();
     }
 
-
     /**
      * Procesa un intento de letra en una partida existente.
      *
@@ -95,14 +94,21 @@ final class ServicioPartida
      */
     private function estadoComoArray(Game $game): array
     {
+        $isWon = $game->isWon();
+        $isLost = $game->isLost();
+
         return [
             'id' => $game->getId(),
             'palabra_oculta' => $game->getMaskedWord(),
+            'palabra_real' => $game->getWord(),
             'intentos_restantes' => $game->getAttemptsLeft(),
             'letras_usadas' => $game->getUsedLetters(),
-            'estado' => $game->isWon()
-                ? 'ganado'
-                : ($game->isLost() ? 'perdido' : 'en curso'),
+            'estado' => $isWon ? 'ganado' : ($isLost ? 'perdido' : 'en curso'),
+            'ganado' => $isWon,
+            'perdido' => $isLost,
+            'mensaje' => $isWon
+                ? '🎉 ¡Has ganado! La palabra era: ' . $game->getWord()
+                : ($isLost ? '💀 Has perdido. La palabra era: ' . $game->getWord() : ''),
         ];
     }
 }
