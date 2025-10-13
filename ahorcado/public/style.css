@@ -202,4 +202,15 @@ body.lost .result-banner {
     background-color: var(--accent-hover);
 }
 
+.word-display .value {
+    letter-spacing: 0.4em;
+    font-family: monospace;
+    font-size: 1.4em;
+}
+.ascii-art pre {
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1.1;
+    margin: 0;
+}
 

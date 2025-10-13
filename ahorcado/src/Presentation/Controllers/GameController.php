@@ -38,7 +38,6 @@ final class GameController
             $gameId = $_SESSION['game_id'];
         }
 
-        // Variables iniciales
         $mensaje = '';
         $palabraOculta = '';
         $letrasUsadas = [];
@@ -46,7 +45,6 @@ final class GameController
         $bodyState = 'playing';
         $palabraReal = '';
 
-        // Obtener el estado actual
         $estado = $this->servicioPartida->obtenerEstado($gameId);
         $palabraOculta = $estado['palabra_oculta'] ?? '';
         $letrasUsadas = $estado['letras_usadas'] ?? [];
@@ -55,7 +53,6 @@ final class GameController
         $isLost = $estado['perdido'] ?? false;
         $palabraReal = $estado['palabra_real'] ?? '';
 
-        // Solo procesar POST si el juego sigue activo
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['letra']) && !$isWon && !$isLost) {
             $letra = trim($_POST['letra']);
             if ($letra !== '') {
@@ -70,7 +67,6 @@ final class GameController
             }
         }
 
-        // Determinar estado del cuerpo y mensaje final
         if ($isWon) {
             $bodyState = 'won';
             $mensaje = '🎉 ¡Has ganado! La palabra era: ' . $palabraReal;
@@ -79,7 +75,6 @@ final class GameController
             $mensaje = '💀 Has perdido. La palabra era: ' . $palabraReal;
         }
 
-        // Retornar datos a la vista
         return [
             'mensaje' => $mensaje,
             'palabra_oculta' => $palabraOculta,

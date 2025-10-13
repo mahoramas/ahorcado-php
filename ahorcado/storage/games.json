@@ -350,6 +350,62 @@
             "maxAttempts": 6,
             "attemptsLeft": 6,
             "usedLetters": []
+        },
+        "ahorcado_68ed02e86ef0b4.80852795": {
+            "id": "ahorcado_68ed02e86ef0b4.80852795",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 6,
+            "usedLetters": [
+                "A",
+                "N",
+                "M",
+                "E",
+                "S",
+                "P",
+                "C"
+            ]
+        },
+        "ahorcado_68ed0358ae6c03.23923475": {
+            "id": "ahorcado_68ed0358ae6c03.23923475",
+            "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "H",
+                "J",
+                "K",
+                "L",
+                "O",
+                "I",
+                "U"
+            ]
+        },
+        "ahorcado_68ed036ead6409.39593682": {
+            "id": "ahorcado_68ed036ead6409.39593682",
+            "word": "PHP",
+            "maxAttempts": 6,
+            "attemptsLeft": 0,
+            "usedLetters": [
+                "P",
+                "I",
+                "U",
+                "Y",
+                "T",
+                "R",
+                "E"
+            ]
+        },
+        "ahorcado_68ed03829e0a45.22855762": {
+            "id": "ahorcado_68ed03829e0a45.22855762",
+            "word": "NAMESPACE",
+            "maxAttempts": 6,
+            "attemptsLeft": 5,
+            "usedLetters": [
+                "A",
+                "S",
+                "D"
+            ]
         }
     }
 }

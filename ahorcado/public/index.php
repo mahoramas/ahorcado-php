@@ -10,25 +10,20 @@ use App\Infrastructure\Persistence\JsonWordRepository;
 use App\Presentation\Controllers\GameController;
 use App\Presentation\Views\Renderer;
 
-// Cargar configuración
 $config = require __DIR__ . '/../config/config.php';
 $gamesPath   = $config['storage']['games_file'];
 $wordsPath   = $config['storage']['words_file'];
 $maxAttempts = (int)$config['game']['max_attempts'];
 
-// Inicializar repositorios y servicio
 $gameRepository = new JsonGameRepository($gamesPath);
 $wordRepository = new JsonWordRepository($wordsPath);
 $servicioPartida = new ServicioPartida($gameRepository, $wordRepository, $maxAttempts);
 
-// Crear controlador y procesar solicitud
 $controller = new GameController($servicioPartida);
 $responseData = $controller->handle();
 
-// Crear renderer
 $renderer = new Renderer();
 
-// Variables de presentación
 $maskedWordDisplay = $responseData['palabra_oculta'] ?? '';
 $attemptsLeft      = $responseData['intentos_restantes'] ?? $maxAttempts;
 $usedLetters       = $responseData['letras_usadas'] ?? [];
@@ -42,35 +37,6 @@ $bodyState         = $responseData['estado'] ?? 'playing';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahorcado en PHP</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .word-display .value {
-            letter-spacing: 0.4em;
-            font-family: monospace;
-            font-size: 1.4em;
-        }
-        .ascii-art pre {
-            font-family: monospace;
-            white-space: pre;
-            line-height: 1.1;
-            margin: 0;
-        }
-        .reset-button {
-            display: inline-block;
-            margin-top: 1.2em;
-            padding: 0.7em 1.3em;
-            font-size: 1em;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            text-decoration: none;
-        }
-        .reset-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body class="<?= htmlspecialchars($bodyState, ENT_QUOTES, 'UTF-8') ?>">
 <div class="background"></div>

@@ -16,7 +16,7 @@ final class Renderer
      */
     public function ascii(int $attemptsLeft): string
     {
-        $parts = 6; // número total de partes del cuerpo
+        $parts = 6;
         $failed = 6 - $attemptsLeft;
         $failed = max(0, min($failed, $parts));
 

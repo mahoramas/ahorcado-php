@@ -43,13 +43,11 @@ final class JsonGameRepository implements GameRepositoryInterface
      */
     private function readAll(): array
     {
-        // Asegurar que el directorio existe
         $dir = dirname($this->file);
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
         }
 
-        // Asegurar que el archivo existe
         if (!is_file($this->file)) {
             file_put_contents($this->file, json_encode(['games' => []], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
